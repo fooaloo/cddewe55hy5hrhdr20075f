@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Request Sending</title>
+    <script>
+        // Function to start sending requests
+        function startRequests() {
+            const url = document.getElementById('urlInput').value;
+            if (!url) {
+                alert('Please enter a valid URL.');
+                return;
+            }
+            fetch('/start_requests?url=' + encodeURIComponent(url))
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
+                    alert(data.message); // Notify the user that requests have started
+                    document.getElementById("startButton").disabled = true; // Disable start button
+                    document.getElementById("stopButton").disabled = false; // Enable stop button
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while starting the requests.');
+                });
+        }
+
+        // Function to stop sending requests
+        function stopRequests() {
+            fetch('/stop_requests')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
+                    alert(data.message); // Notify the user that requests have stopped
+                    document.getElementById("startButton").disabled = false; // Enable start button
+                    document.getElementById("stopButton").disabled = true; // Disable stop button
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while stopping the requests.');
+                });
+        }
+    </script>
+</head>
+<body>
+    <h1>Control HTTP Requests</h1>
+
+    <!-- URL Input Form -->
+    <label for="urlInput">Enter the URL to send requests to:</label>
+    <input type="text" id="urlInput" placeholder="http://example.com">
+    
+    <br><br>
+
+    <button id="startButton" onclick="startRequests()">Start Sending Requests</button>
+    <button id="stopButton" onclick="stopRequests()" disabled>Stop Sending Requests</button>
+</body>
+</html>
